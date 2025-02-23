@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   profileImage: { type: String },
   tokenAmount: { type: Number, default: 0 }, // The number of tokens the user has
-  dateCreated: { type: Date }, // The date the account was created
+  dateCreated: { type: Date, default: Date.now }, // The date the account was created
   isSubscribed: { type: Boolean, default: false }, // Subscription status
   subscriptionEnd: { type: Date }, // Subscription expiration date
   createdChatbots: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chatbot" }],

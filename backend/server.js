@@ -28,7 +28,6 @@ app.post("/chat", async (req, res) => {
 });
 //OAuth 2.0
 app.post("/oauth/google", async (req, res) => {
-  console.log(req.body.email);
   try {
     const existingUser = await User.findOne({ email: req.body.email });
 
@@ -40,10 +39,12 @@ app.post("/oauth/google", async (req, res) => {
     console.error(error);
   }
 });
-
+//checking if username is available
 app.post("/checkUsername", async (req, res) => {
   const username = req.body.username.toLowerCase();
-  const existingUser = await User.findOne({ username: username });
+  const existingUser = await User.findOne({
+    username: { $regex: `^${username}$`, $options: "i" },
+  });
   if (existingUser) {
     // If username is taken
     return res.status(400).json({ message: "Username is already taken" });
@@ -52,9 +53,8 @@ app.post("/checkUsername", async (req, res) => {
     return res.status(200).json({ message: "Username is available" });
   }
 });
-
+//creating a new user
 app.post("/createUser", async (req, res) => {
-  console.log(req.body);
   try {
     const newUser = new User({
       username: req.body.username,
@@ -67,6 +67,11 @@ app.post("/createUser", async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: "Server error" });
   }
+});
+
+app.get("/api/GetUserInfo", async (req, res) => {
+  console.log("GetUserInfo");
+  res.send("GetUserInfo");
 });
 
 const PORT = 3000;

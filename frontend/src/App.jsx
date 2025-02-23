@@ -1,4 +1,11 @@
-import { createContext, useCallback, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import React from "react";
 import Sidebar from "./components/sidebar";
 import TopBar from "./components/TopBar";
@@ -6,17 +13,16 @@ import DisplayBots from "./components/DisplayBots";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ChatBox from "./components/ChatBox";
 import LoginMenu from "./components/LoginMenu";
-export const LoggedinContext = createContext();
-
+import { UserContextProvider } from "./Hooks/fetchProfileData";
+import User from "../../backend/models/User";
+import { UserContext } from "./Hooks/fetchProfileData";
+import LoginComponent from "./components/LoginMenu";
 function App() {
-  const [Loggedin, setLoggedin] = useState(false);
-
-  const [showLogin, setShowLogin] = useState(false);
   return (
-    <LoggedinContext.Provider value={{ Loggedin, setLoggedin }}>
+    <UserContextProvider>
       <Router>
         <div className=" text-white w-full h-screen">
-          <Sidebar setShowLogin={setShowLogin} />
+          <Sidebar />
           <TopBar />
           <div className="content">
             <Routes>
@@ -25,10 +31,10 @@ function App() {
               <Route path="/Home" element={<DisplayBots />} />
             </Routes>
           </div>
-          {showLogin && <LoginMenu setShowLogin={setShowLogin} />}
         </div>
+        <LoginComponent />
       </Router>
-    </LoggedinContext.Provider>
+    </UserContextProvider>
   );
 }
 

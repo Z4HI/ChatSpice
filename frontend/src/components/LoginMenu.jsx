@@ -5,10 +5,10 @@ import { app } from "../firebase";
 import debounce from "lodash.debounce";
 import { FaCheckCircle } from "react-icons/fa";
 import { TiTimesOutline } from "react-icons/ti";
-import { LoggedinContext } from "../App";
+import { UserContext } from "../Hooks/fetchProfileData";
+import { set } from "mongoose";
 
-const LoginComponent = ({ setShowLogin }) => {
-  const { Loggedin, setLoggedin } = useContext(LoggedinContext);
+const LoginComponent = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [pfp, setPfp] = useState("");
@@ -18,6 +18,7 @@ const LoginComponent = ({ setShowLogin }) => {
   const [message, setMessage] = useState("");
   const [borderColor, setBorderColor] = useState("border-gray-300");
   const [validusername, setValidusername] = useState(false);
+  const { profileData, setProfileData } = useContext(UserContext);
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -53,9 +54,11 @@ const LoginComponent = ({ setShowLogin }) => {
         setEmail(response.user.email);
         setPfp(response.user.photoURL);
       } else {
-        setLoggedin(true);
-        console.log("user Exists already");
-        setShowLogin(false);
+        setProfileData((prevProfileData) => ({
+          ...prevProfileData,
+          loggedIn: true, // Mark as logged in
+          showLogin: false, // Hide the login form
+        }));
       }
     } catch (error) {
       console.log(error);
@@ -97,7 +100,6 @@ const LoginComponent = ({ setShowLogin }) => {
         setMessage(error.response.data.message);
         setBorderColor("border-red-500");
         setValidusername(false);
-        console.log(error);
       }
     } finally {
       setLoading(false); // Reset loading state after request is done
@@ -120,7 +122,10 @@ const LoginComponent = ({ setShowLogin }) => {
             },
           }
         );
-        setShowLogin(false);
+        setProfileData((prevProfileData) => ({
+          ...prevProfileData,
+          showLogin: false,
+        }));
 
         console.log(response.data);
       } catch (error) {}
@@ -129,65 +134,69 @@ const LoginComponent = ({ setShowLogin }) => {
   };
 
   return (
-    <div className=" w-full h-full  grid place-items-center relative text-black font-Poppins font-bold">
-      <div className="absolute inset-0 bg-gray-500/10 backdrop-blur-sm"></div>
-      <div className="bg-white fixed w-100 h-80 rounded-2xl flex flex-col justify-evenly">
-        <div className="flex justify-center">
-          <div
-            onClick={() => setShowLogin(false)}
-            className="hover:cursor-pointer
+    profileData.showLogin && (
+      <div className=" w-full h-full  grid place-items-center text-black font-Poppins font-bold">
+        <div className="absolute inset-0 bg-gray-500/10 backdrop-blur-sm"></div>
+        <div className="bg-white fixed w-100 h-80 rounded-2xl flex flex-col justify-evenly top-1/3">
+          <div className="flex justify-center">
+            <div
+              onClick={() =>
+                setProfileData({ ...profileData, showLogin: false })
+              } // Close the login menu
+              className="hover:cursor-pointer
              w-6 h-6 bg-black right-5 top-5 absolute flex items-center justify-center rounded-2xl"
-          >
-            <TiTimesOutline className="" size={30} color="red" />
-          </div>
+            >
+              <TiTimesOutline className="" size={30} color="red" />
+            </div>
 
-          <div className="text-4xl">
-            {isRegistering ? "Create Account " : "Sign In"}
+            <div className="text-4xl">
+              {isRegistering ? "Create Account " : "Sign In"}
+            </div>
           </div>
+          {!userExists ? (
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="w-70 rounded-md 0">Create Username</div>
+              <input
+                className={`w-70 border-2 p-2 ${borderColor} focus:outline-none focus:ring-2`}
+                type="text"
+                placeholder="Enter Username"
+                value={username}
+                onChange={handleUsernameChange}
+              />
+              {message == "" ? (
+                <p></p> // Show this when loading is true
+              ) : message === "Username is available" ? (
+                <p className="flex items-center">
+                  {message} <FaCheckCircle className="ml-2" color="green" />{" "}
+                  {/* Render when username is available */}
+                </p>
+              ) : (
+                <p className="flex items-center">
+                  {message} <TiTimesOutline className="ml-2" color="red" />{" "}
+                  {/* Render when username is not available */}
+                </p>
+              )}
+              <button
+                onClick={createNewUser}
+                type="button"
+                className="w-70 h-10 bg-blue-600 rounded-md mx-auto text-white hover:cursor-pointer"
+              >
+                Submit
+              </button>
+            </div>
+          ) : (
+            <div className="w-full flex" onClick={handleGoogleLogin}>
+              <button
+                type="button"
+                className="w-70 h-10 bg-red-500 rounded-2xl mx-auto text-white hover:cursor-pointer"
+              >
+                Sign in with google
+              </button>
+            </div>
+          )}
         </div>
-        {!userExists ? (
-          <div className="flex flex-col items-center text-center space-y-4">
-            <div className="w-70 rounded-md 0">Create Username</div>
-            <input
-              className={`w-70 border-2 p-2 ${borderColor} focus:outline-none focus:ring-2`}
-              type="text"
-              placeholder="Enter Username"
-              value={username}
-              onChange={handleUsernameChange}
-            />
-            {message == "" ? (
-              <p></p> // Show this when loading is true
-            ) : message === "Username is available" ? (
-              <p className="flex items-center">
-                {message} <FaCheckCircle className="ml-2" color="green" />{" "}
-                {/* Render when username is available */}
-              </p>
-            ) : (
-              <p className="flex items-center">
-                {message} <TiTimesOutline className="ml-2" color="red" />{" "}
-                {/* Render when username is not available */}
-              </p>
-            )}
-            <button
-              onClick={createNewUser}
-              type="button"
-              className="w-70 h-10 bg-blue-600 rounded-md mx-auto text-white hover:cursor-pointer"
-            >
-              Submit
-            </button>
-          </div>
-        ) : (
-          <div className="w-full flex" onClick={handleGoogleLogin}>
-            <button
-              type="button"
-              className="w-70 h-10 bg-red-500 rounded-2xl mx-auto text-white hover:cursor-pointer"
-            >
-              Sign in with google
-            </button>
-          </div>
-        )}
       </div>
-    </div>
+    )
   );
 };
 

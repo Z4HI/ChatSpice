@@ -1,15 +1,16 @@
-import React, { useState, useContext } from "react";
-import { LoggedinContext } from "../App.jsx";
+import React, { useState, useContext, useEffect } from "react";
+import { UserContext } from "../Hooks/fetchProfileData";
+import { set } from "mongoose";
+import LoginComponent from "./LoginMenu";
 
-const Sidebar = ({ setShowLogin }) => {
-  const { Loggedin, setLoggedin } = useContext(LoggedinContext);
+const Sidebar = () => {
+  const { profileData, setProfileData } = useContext(UserContext);
   return (
     <div className="font-Poppins font-bold text-xl w-[200px] h-screen fixed bg-black flex flex-col justify-evenly text-center ">
       <div className="hover:cursor-pointer h-full flex justify-center items-center">
         LOGO
       </div>
-
-      {Loggedin ? (
+      {profileData.loggedIn === true ? (
         <>
           <div className="hover:cursor-pointer h-full flex justify-center items-center hover:bg-blue-500 transition-all duration-300">
             Profile
@@ -39,7 +40,7 @@ const Sidebar = ({ setShowLogin }) => {
             twitter/IG
           </div>
           <div
-            onClick={() => setLoggedin(false)}
+            onClick={() => setProfileData({ ...profileData, loggedIn: false })}
             className="hover:cursor-pointer h-full flex justify-center items-center hover:bg-blue-500 transition-all duration-300"
           >
             Logout
@@ -48,7 +49,7 @@ const Sidebar = ({ setShowLogin }) => {
       ) : (
         <div
           onClick={() => {
-            setShowLogin(true);
+            setProfileData({ ...profileData, showLogin: true });
           }}
           className="hover:cursor-pointer h-full flex justify-center items-center hover:bg-gray-500 transition-all duration-300"
         >
