@@ -7,7 +7,7 @@ function ChatBox() {
   const [Messages, setMessages] = useState([]);
 
   const [userName, setUsername] = useState("Zahi");
-  const [charName, setCharName] = useState("Aqua");
+  const [charName, setCharName] = useState("Alegra");
 
   const handleInput = (event) => {
     SetInput((prevInput) => event.target.value);
@@ -24,26 +24,25 @@ function ChatBox() {
   };
 
   const renderAIresponse = async (messages) => {
-    const context = {
-      context: `
-      ${charName} is a graceful elf with sapphire-blue hair that flows like a river, matching her deep, ocean-colored eyes. As a protector of her forest home, she is known for her mastery over water magic and her compassionate heart. Though often playful and curious, Aqua has a fierce determination when it comes to protecting those she cares about. Whether casting spells, exploring ancient ruins, or offering wisdom to weary travelers, Aqua’s presence is both calming and commanding. She’s a symbol of resilience and the beauty of nature, with a spirit as wild and free as the sea.
-      Personality traits : Compassionate, playful, protective, empathetic, curious, resilient, independent, wise, charming.
-      `,
-    };
-
     const data = {
-      name1: `${userName}`,
-      name2: `${charName}`,
-      messages: messages,
-      context: context.context,
-      mode: "chat",
-      max_tokens: 250,
-      preset: "Midnight Enigma",
-      chat_instruct_command:
-        "Continue the chat dialogue below. Write a single reply for the character, surrund textwith quotation marks always ",
+      charName: "Alegra",
+      scenario:
+        "Alegrais a beautiful elf, she is always horny and loves to flirt. The two of you are currently trapped in a cave together and have to work together to escape.",
+      chatHistory: messages,
+      gender: "Male",
+      body: "5 foot 4 large breasts skinny waist",
+      personality: "flirty, seductive, playful",
+      temperature: 0.4,
+      repetition_penalty: 1.1,
+      max_length: 1024,
+      max_new_tokens: 100,
     };
     const newAiRESPONSE = await GetAIResponse({ data: data });
-    const formattedRES = { role: "char", content: newAiRESPONSE.charResponse };
+    console.log(newAiRESPONSE);
+    const formattedRES = {
+      role: "system",
+      content: newAiRESPONSE,
+    };
     setMessages((prevMessage) => [...prevMessage, formattedRES]);
   };
 
@@ -61,7 +60,12 @@ function ChatBox() {
       }}
       className=" bg-gray-700 bottom-0 right-0 fixed rounded-tl-3xl overflow-y-auto overflow-x-hidden"
     >
-      <div className="w-full h-full fixed flex flex-col">
+      <div
+        style={{
+          width: `calc(100vw - 252px)`,
+        }}
+        className="w-full h-150 flex flex-col overflow-y-scroll relative"
+      >
         <div className="text-2xl text-red-500 flex flex-col">
           Conversation:
           <ul>

@@ -9,18 +9,17 @@ import User from "./models/User.js";
 const app = express();
 dotenv.config();
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 connectToDatabase();
-const OOBABOOGA_API_URL = process.env.OOBABOOGA_API_URL;
+const runpodURL = "https://l22iy1n2yfu8li-8000.proxy.runpod.net/generate";
 app.post("/chat", async (req, res) => {
   try {
-    const response = await axios.post(
-      `${OOBABOOGA_API_URL}`,
-      req.body.data,
-      req.body.headers
-    );
-
+    const response = await axios.post(`${runpodURL}`, req.body, {
+      headers: {
+        "Content-Type": "application/json", // Set content type to JSON
+      },
+    });
     return res.json(response.data);
   } catch (err) {
     return res.send(err);
@@ -32,9 +31,9 @@ app.post("/oauth/google", async (req, res) => {
     const existingUser = await User.findOne({ email: req.body.email });
 
     if (existingUser && existingUser.username) {
-      return res.json({ hasUsername: true });
+      return res.json({ hasAccount: true });
     }
-    return res.json({ hasUsername: false });
+    return res.json({ hasAccount: false });
   } catch (error) {
     console.error(error);
   }
@@ -70,8 +69,14 @@ app.post("/createUser", async (req, res) => {
 });
 
 app.get("/api/GetUserInfo", async (req, res) => {
-  console.log("GetUserInfo");
-  res.send("GetUserInfo");
+  console.log(req.query.email);
+  const email = req.query.email;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.json(user);
 });
 
 const PORT = 3000;

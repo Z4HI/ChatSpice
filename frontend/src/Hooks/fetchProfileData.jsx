@@ -1,4 +1,5 @@
 import axios from "axios";
+import { set } from "mongoose";
 import React, { useEffect, useState } from "react";
 import { createContext } from "react";
 
@@ -24,12 +25,22 @@ export const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (profileData.loggedIn) {
+      console.log(profileData.email);
       const fetchProfile = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/GetUserInfo"
+            "http://localhost:3000/api/GetUserInfo",
+            {
+              params: { email: profileData.email },
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
           );
-          console.log(response.data);
+          setProfileData((prevProfileData) => ({
+            ...prevProfileData,
+            ...response.data,
+          }));
         } catch (error) {
           console.error("Error fetching profile data:", error);
         }

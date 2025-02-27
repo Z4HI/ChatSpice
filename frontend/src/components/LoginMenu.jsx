@@ -7,6 +7,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { TiTimesOutline } from "react-icons/ti";
 import { UserContext } from "../Hooks/fetchProfileData";
 import { set } from "mongoose";
+import { useNavigate } from "react-router-dom";
 
 const LoginComponent = () => {
   const [username, setUsername] = useState("");
@@ -19,6 +20,7 @@ const LoginComponent = () => {
   const [borderColor, setBorderColor] = useState("border-gray-300");
   const [validusername, setValidusername] = useState(false);
   const { profileData, setProfileData } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -27,6 +29,9 @@ const LoginComponent = () => {
     setBorderColor("border-gray-300"); // Reset to default if input is empty
 
     checkUsername(newUsername); // Call the debounced function
+  };
+  const NavigateHome = () => {
+    navigate("/Home"); // Navigate to the "about" page
   };
   const auth = getAuth(app);
 
@@ -47,7 +52,7 @@ const LoginComponent = () => {
         }
       );
       const data = res.data;
-      if (data.hasUsername == false) {
+      if (data.hasAccount == false) {
         console.log("user does not exist");
         setUserExists(false);
         setIsRegistering(true);
@@ -58,7 +63,10 @@ const LoginComponent = () => {
           ...prevProfileData,
           loggedIn: true, // Mark as logged in
           showLogin: false, // Hide the login form
+          profileImage: response.user.photoURL,
+          email: response.user.email,
         }));
+        NavigateHome();
       }
     } catch (error) {
       console.log(error);
@@ -125,9 +133,10 @@ const LoginComponent = () => {
         setProfileData((prevProfileData) => ({
           ...prevProfileData,
           showLogin: false,
+          profileImage: pfp,
+          username: username,
+          email: email,
         }));
-
-        console.log(response.data);
       } catch (error) {}
       console.log("lets create a user");
     }
