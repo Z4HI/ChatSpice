@@ -18,6 +18,7 @@ import User from "../../backend/models/User";
 import { UserContext } from "./Hooks/fetchProfileData";
 import LoginComponent from "./components/LoginMenu";
 import CreateChatBot from "./components/CreateChatBot";
+import MyBots from "./components/MyBots";
 function App() {
   return (
     <UserContextProvider>
@@ -31,6 +32,7 @@ function App() {
               <Route path="/" element={<DisplayBots />} />
               <Route path="/Home" element={<DisplayBots />} />
               <Route path="/create" element={<CreateChatBot />} />
+              <Route path="/myBots" element={<MyBots />} />
             </Routes>
           </div>
         </div>

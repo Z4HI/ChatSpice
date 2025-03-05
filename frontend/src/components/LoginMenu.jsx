@@ -136,9 +136,11 @@ const LoginComponent = () => {
           profileImage: pfp,
           username: username,
           email: email,
+          loggedIn: true,
         }));
-      } catch (error) {}
-      console.log("lets create a user");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

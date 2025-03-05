@@ -57,27 +57,28 @@ const DisplayBots = () => {
         height: `calc(100vh - 140px)`,
         width: `calc(100vw - 218px)`,
       }}
-      className=" bg-black bottom-0 right-0 fixed rounded-tl-3xl overflow-y-auto overflow-x-hidden"
+      className=" bg-gray-100 bottom-0 right-0 fixed rounded-tl-3xl overflow-y-auto overflow-x-hidden"
     >
       <div
         style={{
           width: `calc(100vw - 218px)`,
         }}
-        className="mt-10 justify-items-center grid grid-rows-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 h-400 "
+        className="mt-10 justify-items-center grid grid-rows-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 h-400 "
       >
         {bots.map((bot, index) => (
           <div
             key={index}
-            className="w-45 h-80 shadow-sm rounded-2xl overflow-hidden hover:cursor-pointer hover:shadow-2xl shadow-blue-600 hover:z-10  transform hover:scale-105 transition-all duration-300 hover:border-8  hover:border-blue-500"
+            className="group w-45 h-80 shadow-sm rounded-2xl overflow-hidden hover:cursor-pointer hover:shadow-2xl shadow-red-600 hover:z-10  transform hover:scale-105 transition-all duration-300 hover:border-8  hover:border-red-400"
           >
+            <div className=" bg-black h-10 border-b-2">Name{}</div>
             <div className="w-full h-50 bg-amber-500">
               <img className="w-full h-full object-cover" src={image} alt="" />
             </div>
 
-            <div className="bg-black h-30">
-              <p>Description</p>
-              <p>Rating</p>
+            <div className="absolute border-t-2 bottom-0 w-full bg-black h-30 group-hover:h-68 transition-all duration-300 p-4 flex flex-col justify-between">
               <p>Creator</p>
+              <p className="overflow-hiddden">Description</p>
+              <p>Rating</p>
             </div>
           </div>
         ))}

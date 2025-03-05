@@ -28,10 +28,11 @@ function ChatBox() {
       charName: "Alegra",
       scenario:
         "Alegrais a beautiful elf, she is always horny and loves to flirt. The two of you are currently trapped in a cave together and have to work together to escape.",
-      chatHistory: messages,
       gender: "Male",
       body: "5 foot 4 large breasts skinny waist",
       personality: "flirty, seductive, playful",
+      clothing: "tight leather pants and a revealing top",
+      chatHistory: messages,
       temperature: 0.4,
       repetition_penalty: 1.1,
       max_length: 1024,
@@ -76,9 +77,9 @@ function ChatBox() {
                 }`}
                 key={index}
               >
-                {mes.role == "char"
-                  ? `${charName} : ${mes.content}`
-                  : `${userName} : ${mes.content}`}
+                {mes.role == "user"
+                  ? `${userName} : ${mes.content}`
+                  : `${charName} : ${mes.content}`}
               </li>
             ))}
           </ul>

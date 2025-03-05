@@ -5,6 +5,12 @@ import dotenv from "dotenv";
 import connectToDatabase from "./db/db.js";
 import createUser from "./createUser.js";
 import User from "./models/User.js";
+import { S3Client, PutObjectAclCommand } from "@aws-sdk/client-s3";
+import multer from "multer";
+import multerS3 from "multer-s3";
+import uploadRoute from "./routes/upload.js";
+import createBot from "./routes/createBot.js";
+import Bot from "./models/BotSchema.js";
 
 const app = express();
 dotenv.config();
@@ -12,7 +18,10 @@ app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 connectToDatabase();
-const runpodURL = "https://l22iy1n2yfu8li-8000.proxy.runpod.net/generate";
+
+app.use("/upload", uploadRoute);
+
+const runpodURL = "https://v9j4bl0t6y1bij-8000.proxy.runpod.net/generate";
 app.post("/chat", async (req, res) => {
   try {
     const response = await axios.post(`${runpodURL}`, req.body, {
@@ -67,9 +76,20 @@ app.post("/createUser", async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
+app.post("/createChatBot", async (req, res) => {
+  try {
+    const data = req.body;
+    const newBot = await createBot(data);
+    const user = await User.findOne({ username: data.createdBy });
+    user.createdChatbots.push(newBot._id);
+    await user.save();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
 
 app.get("/api/GetUserInfo", async (req, res) => {
-  console.log(req.query.email);
   const email = req.query.email;
   const user = await User.findOne({ email });
   if (!user) {
@@ -77,6 +97,18 @@ app.get("/api/GetUserInfo", async (req, res) => {
   }
 
   res.json(user);
+});
+app.get("/getMyBots/:username", async (req, res) => {
+  try {
+    const username = req.params.username;
+    const user = await User.findOne({ username });
+    const bots = await Bot.find({ createdBy: user.username });
+    console.log(bots[0]);
+    res.status(200).json(bots);
+  } catch (error) {
+    console.error("Error fetching user bots:", error);
+    res.status(500).json({ message: "Failed to fetch bots" });
+  }
 });
 
 const PORT = 3000;

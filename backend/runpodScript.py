@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import torch
 print(torch.cuda.is_available())
-
+import re
 
 app = FastAPI()
 
@@ -40,11 +40,14 @@ class PromptRequest(BaseModel):
     gender: str
     body: str
     personality: str
+    clothing: str
     temperature: float = 1.0  # Default temperature value
     repetition_penalty: float = 1.0
     max_length: int = 1024
     max_new_tokens: int = 200
-
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 # Endpoint for generating text based on the provided prompt
 @app.post("/generate")
 def generate_text(request: PromptRequest):
@@ -53,6 +56,7 @@ def generate_text(request: PromptRequest):
     scenario = request.scenario
     gender = request.gender
     body = request.body
+    clothing = request.clothing
     personality = request.personality
     temperature = request.temperature
     repetition_penalty = request.repetition_penalty
@@ -64,6 +68,7 @@ def generate_text(request: PromptRequest):
      Scenario: {scenario}
     Gender: {gender}
     Body description: {body}
+    clothing: {clothing}
     Personality traits: {personality}
 
     You shall reply to the user while staying in character and generate long responses. Use the chat hi>
@@ -89,6 +94,17 @@ def generate_text(request: PromptRequest):
 
     # Extract and clean the generated text
     generated_text = result[0]['generated_text'].strip()
-    response_text = generated_text.split("<|model|>", 1)[-1].strip() if "<|model|>" in generated_text e>
+    strippedText = generated_text.split("<|model|>", 1)[-1].strip()
+    # Step 1: Split the text at punctuation marks (!, ?, .), keeping the punctuation as part of the text
+    split_text = re.split(r'([.!?])', strippedText)
+    
+    # Step 2: Combine the split text back into a list where each element is a complete sentence or action
+    segments = [split_text[i] + split_text[i+1] if i+1 < len(split_text) else split_text[i]
+                for i in range(0, len(split_text), 2)]
+    
+    # Step 3: If the last segment doesn't end with valid punctuation, remove it
+    if segments and not (segments[-1].endswith((',', '.', '?', '*')) or segments[-1].endswith('...')):
+        segments.pop()
+    output = " ".join(segments)
 
-    return {response_text}
+    return output

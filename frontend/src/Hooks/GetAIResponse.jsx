@@ -3,9 +3,8 @@ import axios from "axios";
 
 const GetAIResponse = async ({ data }) => {
   try {
-    const response = await axios.post("http://localhost:3000/chat", data);
+    const response = await axios.post("http://localhost:3000/createBot", data);
 
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching AI response:", error);

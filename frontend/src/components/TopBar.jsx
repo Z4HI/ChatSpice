@@ -1,10 +1,12 @@
 import React from "react";
+import bg2 from "../assets/bg2.jpeg";
+import bg1 from "../assets/bg1.jpeg";
 
 const TopBar = () => {
   return (
     <div
-      style={{ width: `calc(100vw - 218px)` }}
-      className="h-30 w-screen-50 bg-black flex flex-col justify-evenly fixed items-center right-0 rounded-bl-3xl"
+      style={{ width: `calc(100vw - 218px)`, backgroundImage: `url(${bg1})` }}
+      className="h-30 w-screen-50 bg-contain flex flex-col justify-evenly fixed items-center right-0 rounded-bl-3xl"
     >
       <div className="w-full flex justify-evenly items-center">
         <div className="">Categories</div>

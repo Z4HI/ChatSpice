@@ -25,7 +25,6 @@ export const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (profileData.loggedIn) {
-      console.log(profileData.email);
       const fetchProfile = async () => {
         try {
           const response = await axios.get(
