@@ -19,6 +19,7 @@ import { UserContext } from "./Hooks/fetchProfileData";
 import LoginComponent from "./components/LoginMenu";
 import CreateChatBot from "./components/CreateChatBot";
 import MyBots from "./components/MyBots";
+import ProfilePage from "./components/ProfilePage";
 function App() {
   return (
     <UserContextProvider>
@@ -28,11 +29,12 @@ function App() {
           <TopBar />
           <div className="content">
             <Routes>
-              <Route path="/chat" element={<ChatBox />} />
+              <Route path="/chat/:botId" element={<ChatBox />} />
               <Route path="/" element={<DisplayBots />} />
               <Route path="/Home" element={<DisplayBots />} />
               <Route path="/create" element={<CreateChatBot />} />
               <Route path="/myBots" element={<MyBots />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </div>
         </div>

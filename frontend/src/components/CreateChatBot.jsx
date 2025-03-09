@@ -7,14 +7,14 @@ import { useForm } from "react-hook-form";
 import UploadImage from "./uploadImageComponent";
 import { useContext } from "react";
 import { UserContext } from "../Hooks/fetchProfileData";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
 const CreateChatBot = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [Scenario, setScenario] = useState("");
   const [greeting, setGreeting] = useState("");
-  const [traits, setTraits] = useState("");
+  const [personality, setPersonality] = useState("");
   const [tags, setTags] = useState([]);
   const [sensitive, setSensitive] = useState(false);
   const [publicView, setPublicView] = useState(false);
@@ -27,7 +27,7 @@ const CreateChatBot = () => {
   const [tagError, setTagError] = useState(false);
   const [image, setImage] = useState(null);
   const { profileData, setProfileData } = useContext(UserContext);
-
+  const navigate = useNavigate();
   const loggedin = profileData.loggedIn;
 
   const data = {
@@ -37,7 +37,7 @@ const CreateChatBot = () => {
     scenario: Scenario,
     gender: gender,
     body: physicals,
-    personality: traits,
+    personality: personality,
     clothing: clothing,
     greeting: greeting,
     tags: tags,
@@ -72,8 +72,10 @@ const CreateChatBot = () => {
         alert("Image upload failed.");
         return;
       }
-      console.log("Image URL", imageUrl);
+      console.log("creating bot"); // Debugging
       await createBot({ ...data, image: imageUrl }); // ✅ Pass the imageUrl
+      console.log("Navigating to /myBots"); // Debugging
+      navigate("/myBots");
     } catch (error) {
       console.error("Error uploading image:", error);
     }
@@ -139,7 +141,7 @@ const CreateChatBot = () => {
         height: `calc(100vh - 140px)`,
         width: `calc(100vw - 218px)`,
       }}
-      className=" bg-gray-700 bottom-0 right-0 fixed rounded-tl-3xl overflow-y-auto overflow-x-hidden flex"
+      className=" bg-gray-100 bottom-0 right-0 fixed rounded-tl-3xl overflow-y-auto overflow-x-hidden flex"
     >
       <div className=" flex flex-col justify-evenly text-center bg-gray-600 h-185 w-60 fixed m-4 rounded-2xl">
         <div>
@@ -166,7 +168,7 @@ const CreateChatBot = () => {
           width: `calc(100vw - 502px)`,
         }}
         action=""
-        className="left-70 w-full h-390 relative  flex flex-col justify-around overflow-y-scroll"
+        className="mt-5 rounded-2xl left-70 w-full h-390 relative  flex flex-col justify-around overflow-y-scroll"
       >
         <div className="w-full pr-20 h-20 flex  items-center  bg-gray-600 p-5">
           <div className="w-30 ">Name</div>
@@ -185,6 +187,7 @@ const CreateChatBot = () => {
           <textarea
             name=""
             id=""
+            maxLength={160}
             className="border ml-10 rounded-2xl p-3 w-full"
             {...register("description", {
               required: "description is required",
@@ -200,6 +203,7 @@ const CreateChatBot = () => {
         <div className="w-full h-80 flex  items-center  bg-gray-600 p-5">
           <div className="w-30">Scenario</div>
           <textarea
+            maxLength={300}
             name=""
             id=""
             className="border ml-10 rounded-2xl p-3 w-full"
@@ -242,18 +246,18 @@ const CreateChatBot = () => {
             name=""
             id=""
             className="border ml-10 rounded-2xl p-3 w-full"
-            {...register("Body")}
+            {...register("physicals")}
             onChange={(e) => setPhysical(e.target.value)}
             value={physicals}
             placeholder="Enter Characters body type, height, weight, etc"
           ></textarea>
         </div>
         <div className="w-full h-30 flex  items-center  bg-gray-600 p-5">
-          <div className="w-30">Traits</div>
+          <div className="w-30">Personality</div>
           <textarea
-            {...register("traits")}
-            onChange={(e) => setTraits(e.target.value)}
-            value={traits}
+            {...register("personality")}
+            onChange={(e) => setPersonality(e.target.value)}
+            value={personality}
             className="border ml-10 rounded-2xl p-3 w-full"
             placeholder="Enter personaility traits of the characer, seperate by comma"
           ></textarea>

@@ -11,6 +11,8 @@ import multerS3 from "multer-s3";
 import uploadRoute from "./routes/upload.js";
 import createBot from "./routes/createBot.js";
 import Bot from "./models/BotSchema.js";
+import BotPgae from "./routes/BotPageRoute.js";
+import deleteBot from "./routes/deleteBotRoute.js";
 
 const app = express();
 dotenv.config();
@@ -20,6 +22,8 @@ app.use(express.json());
 connectToDatabase();
 
 app.use("/upload", uploadRoute);
+app.use("/BotPage", BotPgae);
+app.use("/deleteBot", deleteBot);
 
 const runpodURL = "https://v9j4bl0t6y1bij-8000.proxy.runpod.net/generate";
 app.post("/chat", async (req, res) => {
@@ -83,6 +87,7 @@ app.post("/createChatBot", async (req, res) => {
     const user = await User.findOne({ username: data.createdBy });
     user.createdChatbots.push(newBot._id);
     await user.save();
+    return res.status(201).json({ message: "Bot created successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Server error" });
@@ -103,7 +108,6 @@ app.get("/getMyBots/:username", async (req, res) => {
     const username = req.params.username;
     const user = await User.findOne({ username });
     const bots = await Bot.find({ createdBy: user.username });
-    console.log(bots[0]);
     res.status(200).json(bots);
   } catch (error) {
     console.error("Error fetching user bots:", error);

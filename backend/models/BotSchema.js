@@ -17,6 +17,7 @@ const chatbotSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   rating: { type: Number, default: 0, min: 0, max: 5 },
   likes: { type: Number, default: 0 },
+  dislikes: { type: Number, default: 0 },
   views: { type: Number, default: 0 },
   comments: [
     {

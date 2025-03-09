@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   dateCreated: { type: Date, default: Date.now }, // The date the account was created
   isSubscribed: { type: Boolean, default: false }, // Subscription status
   subscriptionEnd: { type: Date }, // Subscription expiration date
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chatbot" }], // List of favorite chatbots
   createdChatbots: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chatbot" }],
   level: { type: Number, default: 1 }, // The user's level
   experience: { type: Number, default: 0 }, // The user's experience points

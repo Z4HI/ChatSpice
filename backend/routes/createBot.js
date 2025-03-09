@@ -10,8 +10,8 @@ const createBot = async (data) => {
       description: data.description,
       scenario: data.scenario,
       gender: data.gender,
-      body: data.Body,
-      personality: data.traits,
+      body: data.body,
+      personality: data.personality,
       clothing: data.clothing,
       greeting: data.greeting,
       image: data.image, // Ensure image URL is passed

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { ThumbsUp, Eye, MessageCircleMore } from "lucide-react";
 
 const UploadImage = ({ image, setImage, creator, description, botName }) => {
   const [preview, setPreview] = useState(null);
@@ -25,22 +26,28 @@ const UploadImage = ({ image, setImage, creator, description, botName }) => {
 
   return (
     <div className=" flex flex-col items-center justify-evenly h-140 ">
-      <div className="group w-45 h-80 shadow-sm rounded-2xl overflow-hidden  hover:shadow-2xl shadow-red-600 hover:z-10  transform hover:scale-105 transition-all duration-300 hover:border-8  hover:border-red-400">
-        <div className=" bg-black border-b-2 h-10">{botName}</div>
-        <div className="w-full h-50 bg-gray-500">
-          {image ? (
-            <img className="w-full h-full object-cover" src={preview} alt="" />
-          ) : (
-            <p className="text-white text-center">No Image</p>
-          )}
+      <div className="mt-10 group w-45 h-80 shadow-sm rounded-2xl overflow-hidden hover:cursor-pointer hover:shadow-2xl shadow-red-600 hover:z-10  transform  transition-all duration-300 hover:border-8  hover:border-red-400">
+        <div className="absolute w-full flex justify-evenly h-8 bg-gradient-to-b from-black to-transparent text-white">
+          <p className="flex items-center justify-evenly w-10">
+            <ThumbsUp size={15} /> 0
+          </p>
+          <p className="flex items-center justify-evenly w-10">
+            <Eye size={15} /> 0
+          </p>
+          <p className="flex items-center justify-evenly w-10">
+            <MessageCircleMore size={15} /> 0
+          </p>
+        </div>
+        <div className="w-full h-50 bg-amber-500">
+          <img className="w-full h-full object-cover" src={preview} alt="" />
         </div>
 
-        <div className="border-t-2 absolute bottom-0 w-full bg-black h-30 group-hover:h-68 transition-all duration-300 p-4 flex flex-col justify-between">
-          <p className="text-white font-bold">Author: {creator}</p>
-          <p className="text-white overflow-hidden text-sm">
-            Description: {description}
-          </p>
-          <p>Rating: 4/5</p>
+        <div className="absolute bottom-0 w-full bg-black h-31 group-hover:h-68 transition-all duration-300  flex flex-col justify-between">
+          <div className="absolute w-full top-0 h-10 text-center bg-gradient-to-t from-black to-red-400">
+            Name: {botName}
+          </div>
+          <p className="mt-10">Author: {creator}</p>
+          <p className="overflow-hidden">Description: {description}</p>
         </div>
       </div>
       <div

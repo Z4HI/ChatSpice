@@ -19,6 +19,9 @@ const Sidebar = () => {
   const navigateMyBots = () => {
     navigate("/myBots");
   };
+  const navigateProfile = () => {
+    navigate("/profile");
+  };
 
   return (
     <div
@@ -43,7 +46,10 @@ const Sidebar = () => {
             <div className="fixed h-20 w-40 flex justify-center items-center  backdrop-blur-3xl mt-10  "></div>
             <div className="z-10 hover:cursor-pointer w-35 flex justify-center items-center ">
               {profileData.profileImage ? (
-                <div className="flex justify-center w-35 h-17 items-center hover:bg-red-500 transition-all duration-300">
+                <div
+                  onClick={navigateProfile}
+                  className="flex justify-center w-35 h-17 items-center hover:bg-red-500 transition-all duration-300"
+                >
                   <img
                     src={profileData.profileImage}
                     alt="Profile"
